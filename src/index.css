@@ -1,71 +1,90 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import 'leaflet/dist/leaflet.css';
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --brand-primary: 0, 114, 54;
+    /* Zambia Green */
+    --brand-secondary: 255, 102, 0;
+    /* Zambia Orange */
+    --brand-accent: 0, 0, 0;
+    /* Zambia Black */
   }
-  a:hover {
-    color: #747bff;
+
+  body {
+    @apply antialiased text-slate-900 bg-slate-50;
+    font-family: 'Outfit', sans-serif;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
   }
+
+  .dark .glass {
+    @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/30;
+  }
+
+  .premium-shadow {
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-green-500;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full dark:bg-slate-700;
+  }
+
+  .leaflet-container {
+    width: 100%;
+    height: 100%;
+    @apply rounded-3xl transition-all duration-500;
+  }
+
+  /* Map Tile Tweaks */
+  .leaflet-tile {
+    filter: brightness(0.95) contrast(1.1) saturate(0.8);
+  }
+
+  .dark .leaflet-tile {
+    filter: invert(100%) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.delay-1 {
+  animation-delay: 1s;
+}
+
+.delay-2 {
+  animation-delay: 2s;
 }
