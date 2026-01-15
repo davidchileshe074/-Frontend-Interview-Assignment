@@ -16,11 +16,11 @@ test('searches and displays city results', async () => {
   expect(screen.getByText(/Zambia Geo Explorer/i)).toBeInTheDocument();
 
   // Type "Kitwe" into search
-  const input = screen.getByPlaceholderText(/Search for a city/i);
+  const input = screen.getByPlaceholderText(/Search city or province/i);
   await user.type(input, 'Kitwe');
 
   // Click search button
-  const button = screen.getByRole('button', { name: /search/i });
+  const button = screen.getByRole('button', { name: /discover now/i });
   await user.click(button);
 
   // Wait for and verify result appears
@@ -28,25 +28,23 @@ test('searches and displays city results', async () => {
 
   expect(screen.getByText((content, element) => {
     const hasText = (node) => node.textContent.includes('522,000');
-    const nodeHasText = hasText(element);
-    const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
-    return nodeHasText && childrenDontHaveText;
+    return element.tagName.toLowerCase() === 'p' && hasText(element) &&
+      Array.from(element.children).every(child => !hasText(child));
   })).toBeInTheDocument();
 
   expect(screen.getByText((content, element) => {
     const hasText = (node) => node.textContent.includes('Copperbelt');
-    const nodeHasText = hasText(element);
-    const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
-    return nodeHasText && childrenDontHaveText;
+    return element.tagName.toLowerCase() === 'p' && hasText(element) &&
+      Array.from(element.children).every(child => !hasText(child));
   })).toBeInTheDocument();
 
   expect(screen.getByText((content, element) => {
-    const hasText = (node) => node.textContent.includes('Provincial Capital:') && node.textContent.includes('No');
-    const nodeHasText = hasText(element);
-    const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
-    return nodeHasText && childrenDontHaveText;
+    const hasText = (node) => node.textContent.includes('Capital:') && node.textContent.includes('No');
+    return element.tagName.toLowerCase() === 'p' && hasText(element) &&
+      Array.from(element.children).every(child => !hasText(child));
   })).toBeInTheDocument();
 }, 15000);
+
 
 
 test('shows loading state while fetching', async () => {
@@ -55,12 +53,11 @@ test('shows loading state while fetching', async () => {
       <App />
     </MemoryRouter>
   );
-  const input = screen.getByPlaceholderText(/Search for a city/i);
-  const button = screen.getByRole('button', { name: /search/i });
+  const input = screen.getByPlaceholderText(/Search city or province/i);
+  const button = screen.getByRole('button', { name: /discover now/i });
 
   fireEvent.change(input, { target: { value: 'Kitwe' } });
   fireEvent.click(button);
 
   expect(screen.getByText(/Fetching Zambian data/i)).toBeInTheDocument();
 }, 10000);
-
