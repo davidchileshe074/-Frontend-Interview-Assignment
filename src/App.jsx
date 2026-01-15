@@ -81,9 +81,7 @@ function App() {
 
           <div className="text-center md:text-right">
             <p className="text-sm font-black text-slate-900 dark:text-white tracking-widest uppercase mb-2">Developed for Recruitment 2026</p>
-            <p className="text-xs font-bold text-slate-400 dark:text-slate-600 uppercase tracking-widest flex items-center gap-2 justify-center md:justify-end">
-              Built with <span className="text-orange-500 animate-pulse">❤</span> by ZedLearn Team
-            </p>
+            
           </div>
         </div>
       </footer>
