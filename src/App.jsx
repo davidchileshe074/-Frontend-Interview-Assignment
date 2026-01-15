@@ -114,7 +114,7 @@ function Home() {
 }
 
 function Province() {
-  const { name } = useParams();
+  const { provinceName } = useParams();
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -125,7 +125,7 @@ function Province() {
       setLoading(true);
       setError(false);
       try {
-        const response = await fetch(`${API_BASE_URL}/provinces/${name}/cities`);
+        const response = await fetch(`${API_BASE_URL}/provinces/${provinceName}/cities`);
         if (!response.ok) throw new Error('Province not found');
         const data = await response.json();
         if (isMounted) {
@@ -145,7 +145,7 @@ function Province() {
 
     fetchProvinceCities();
     return () => { isMounted = false; };
-  }, [name]);
+  }, [provinceName]);
 
   if (loading) {
     return (
@@ -170,7 +170,7 @@ function Province() {
         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Search
       </Link>
       <header className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 font-serif">Province: {name}</h2>
+        <h2 className="text-3xl font-bold text-gray-900 font-serif">Province: {provinceName}</h2>
         <p className="text-gray-600 mt-2 font-medium">Major Cities & Towns</p>
       </header>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -199,11 +199,12 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/province/:name" element={<Province />} />
-        <Route path="*" element={<div className="p-8 text-center text-2xl font-bold">404 - Not Found</div>} />
+        <Route path="/province/:provinceName" element={<Province />} />
+        <Route path="*" element={<div className="p-12 text-center text-2xl font-bold text-gray-800">404 - Page Not Found</div>} />
       </Routes>
     </div>
   );
 }
+
 
 export default App;
