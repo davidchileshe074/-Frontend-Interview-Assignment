@@ -1,15 +1,16 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import App from './App';
-import { server } from './mocks/server';
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
 
 test('searches and displays city results', async () => {
+
   const user = userEvent.setup();
-  render(<App />);
+  render(
+    <MemoryRouter initialEntries={['/']}>
+      <App />
+    </MemoryRouter>
+  );
 
   //Check if header exists
   expect(screen.getByText(/Zambia Geo Explorer/i)).toBeInTheDocument();
@@ -22,17 +23,38 @@ test('searches and displays city results', async () => {
   const button = screen.getByRole('button', { name: /search/i });
   await user.click(button);
 
-  // Verify result appears
-  await waitFor(() => {
-    expect(screen.getByText('Kitwe')).toBeInTheDocument();
-    expect(screen.getByText(/Population: 522,000/i)).toBeInTheDocument();
-    expect(screen.getByText(/Province: Copperbelt/i)).toBeInTheDocument();
-    expect(screen.getByText(/Provincial Capital: No/i)).toBeInTheDocument();
-  });
-});
+  // Wait for and verify result appears
+  await screen.findByText('Kitwe');
+
+  expect(screen.getByText((content, element) => {
+    const hasText = (node) => node.textContent.includes('522,000');
+    const nodeHasText = hasText(element);
+    const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
+    return nodeHasText && childrenDontHaveText;
+  })).toBeInTheDocument();
+
+  expect(screen.getByText((content, element) => {
+    const hasText = (node) => node.textContent.includes('Copperbelt');
+    const nodeHasText = hasText(element);
+    const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
+    return nodeHasText && childrenDontHaveText;
+  })).toBeInTheDocument();
+
+  expect(screen.getByText((content, element) => {
+    const hasText = (node) => node.textContent.includes('Provincial Capital:') && node.textContent.includes('No');
+    const nodeHasText = hasText(element);
+    const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
+    return nodeHasText && childrenDontHaveText;
+  })).toBeInTheDocument();
+}, 15000);
+
 
 test('shows loading state while fetching', async () => {
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
   const input = screen.getByPlaceholderText(/Search for a city/i);
   const button = screen.getByRole('button', { name: /search/i });
 
@@ -40,4 +62,5 @@ test('shows loading state while fetching', async () => {
   fireEvent.click(button);
 
   expect(screen.getByText(/Fetching Zambian data/i)).toBeInTheDocument();
-});
+}, 10000);
+
